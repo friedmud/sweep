@@ -3,13 +3,21 @@
 // local includes
 #include "SweepWork.h"
 
-SweepStudy::SweepStudy(const libMesh::Parallel::Communicator & comm, const InputParameters & params)
+SweepStudy::SweepStudy(const libMesh::Parallel::Communicator & comm, const InputParameters & params, MooseMesh & mesh)
     : ParallelStudy<std::shared_ptr<SweepWork>, SweepWork, SweepStudy>(
       comm,
       this,
       params,
-      "SweepStudy")
+      "SweepStudy"),
+    _mesh(mesh)
 {
+}
+
+void SweepStudy::generateWork()
+{
+  std::shared_ptr<SweepWork> work = acquireParallelData(0);
+
+  moveWorkToBuffer(work, 0);
 }
 
 void
@@ -54,5 +62,7 @@ SweepStudy::postReceiveParallelData(const parallel_data_iterator begin,
 void
 SweepStudy::executeWork(const std::shared_ptr<SweepWork> & sweep_work, const THREAD_ID tid)
 {
+  std::cout << "Executing Work!" << std::endl;
   //_threaded_trace_sweep_work[tid]->trace(sweep_work);
+  sweep_work->_should_continue = false;
 }
