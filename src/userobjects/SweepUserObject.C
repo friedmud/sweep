@@ -33,5 +33,3 @@ SweepUserObject::execute()
 {
   _sweep_study.execute();
 }
-
-#endif

@@ -1,13 +1,20 @@
 #include "SweepWork.h"
 
+#include "DataIO.h"
+
+namespace libMesh
+{
+namespace Parallel
+{
+
 unsigned int
-Packing<std::shared_ptr<SweepWork>>::packed_size(typename std::vector<buffer_type>::const_iterator in)
+Packing<std::shared_ptr<SweepWork>>::packed_size(typename std::vector<buffer_type>::const_iterator)
 {
   return data_size;
 }
 
 unsigned int
-Packing<std::shared_ptr<SweepWork>>::packable_size(const std::shared_ptr<SweepWork> & sweep_work, const void *)
+Packing<std::shared_ptr<SweepWork>>::packable_size(const std::shared_ptr<SweepWork> &, const void *)
 {
   return data_size;
 }
@@ -16,12 +23,12 @@ template <>
 std::shared_ptr<SweepWork>
 Packing<std::shared_ptr<SweepWork>>::unpack(std::vector<buffer_type>::const_iterator in, SweepStudy  * study)
 {
-  sted::shared_ptr<SweepWork> sweep_work = study->acquireParallelData(0);
+  std::shared_ptr<SweepWork> sweep_work = study->acquireParallelData(0);
 
   // Unpack the data
-  *in++ >> sweep_work->_current_value;
-  *in++ >> sweep_work->_current_node;
-  *in++ >> sweep_work->_current_elem;
+  sweep_work->_current_value = *in++;
+  sweep_work->_current_node = *in++;
+  sweep_work->_current_elem = *in++;
 
   return sweep_work;
 }

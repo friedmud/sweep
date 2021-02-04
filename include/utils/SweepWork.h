@@ -1,11 +1,15 @@
 #pragma once
 
+#include "libmesh/dof_object.h"
+
 class SweepWork
 {
 public:
-  long unsigned int _current_value = 0;
-  dof_id_type _current_node = INVALID_DOF_ID;
-  dof_id_type _current_elem = INVALID_DOF_ID;
+  Real  /* processor_id_type */_processor_id = Moose::INVALID_PROCESSOR_ID;
+  Real  /* long unsigned int */ _current_value = 0;
+  Real  /* dof_id_type */ _current_node = DofObject::invalid_id;
+  Real  /* dof_id_type */ _current_elem = DofObject::invalid_id;
+  Real  /* bool */ _should_continue = true;
 };
 
 /**
@@ -22,7 +26,7 @@ class Packing<std::shared_ptr<SweepWork>>
 public:
   typedef Real buffer_type;
 
-  static data_size = 3;
+  static const unsigned int data_size = 3;
   static unsigned int packed_size(typename std::vector<Real>::const_iterator in);
   static unsigned int packable_size(const std::shared_ptr<SweepWork> & ray, const void *);
 

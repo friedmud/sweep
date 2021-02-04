@@ -34,5 +34,3 @@ protected:
 
   SweepStudy _sweep_study;
 };
-
-#endif // LIBMESH_HAVE_FPARSER

@@ -17,8 +17,9 @@ SweepStudy::postExecuteChunk(const work_iterator begin, const work_iterator end)
 {
   for (auto it = begin; it != end; ++it)
   {
-    std::shared_ptr<SweepWork> & sweep_work = *it;
+//    std::shared_ptr<SweepWork> & sweep_work = *it;
 
+    /*
     // The SweepWork is not done tracing
     if (sweep_work->shouldContinue())
     {
@@ -30,6 +31,7 @@ SweepStudy::postExecuteChunk(const work_iterator begin, const work_iterator end)
         mooseError("Continuing SweepWork is not going to another processor after being traced\n\n",
                    sweep_work->getInfo());
     }
+    */
   }
 }
 
@@ -37,7 +39,7 @@ bool
 SweepStudy::workIsComplete(const std::shared_ptr<SweepWork> & sweep_work)
 {
   // "Work" (a SweepWork) is considered complete in the parallel algorithm when it is done tracing
-  return !sweep_work->shouldContinue();
+  return !sweep_work->_should_continue;
 }
 
 void
