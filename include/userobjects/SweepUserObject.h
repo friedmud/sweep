@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "SweepStudy.h"
+
 #include "GeneralUserObject.h"
 
 // Forward Declarations
@@ -29,6 +31,8 @@ public:
   virtual void finalize() override {}
 
 protected:
+
+  SweepStudy _sweep_study;
 };
 
 #endif // LIBMESH_HAVE_FPARSER

@@ -23,13 +23,15 @@ SweepUserObject::validParams()
 }
 
 SweepUserObject::SweepUserObject(const InputParameters & parameters)
-  : GeneralUserObject(parameters)
+    : GeneralUserObject(parameters),
+      _sweep_study(this->comm(), parameters)
 {
 }
 
 void
 SweepUserObject::execute()
 {
+  _sweep_study.execute();
 }
 
 #endif
