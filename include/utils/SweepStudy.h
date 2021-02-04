@@ -3,28 +3,21 @@
 #include "ParallelStudy.h"
 
 // Local includes
-#include "Ray.h"
+#include "SweepWork.h"
 
 // Forward declarations
-class RayTracingStudy;
-class TraceRay;
+class SweepWorkTracingStudy;
+class TraceSweepWork;
 
-class SweepStudy : public ParallelStudy<std::shared_ptr<Ray>, Ray, RayTracingStudy>
+class SweepStudy : public ParallelStudy<std::shared_ptr<SweepWork>, SweepWork, SweepStudy>
 {
 public:
-  SweepStudy(RayTracingStudy & study,
-                   const std::vector<std::shared_ptr<TraceRay>> & threaded_trace_ray);
+  SweepStudy(const libMesh::Parallel::Communicator & comm, const InputParameters & params);
 
 protected:
-  void executeWork(const std::shared_ptr<Ray> & ray, const THREAD_ID tid) override;
-  void moveWorkError(const MoveWorkError error, const std::shared_ptr<Ray> * ray) const override;
+  void executeWork(const std::shared_ptr<SweepWork> & sweep_work, const THREAD_ID tid) override;
   void postReceiveParallelData(const parallel_data_iterator begin,
                                const parallel_data_iterator end) override;
-  bool workIsComplete(const std::shared_ptr<Ray> & ray) override;
+  bool workIsComplete(const std::shared_ptr<SweepWork> & sweep_work) override;
   void postExecuteChunk(const work_iterator begin, const work_iterator end) override;
-
-  /// The RayTracingStudy
-  RayTracingStudy & _ray_tracing_study;
-  /// The TraceRay objects that do the tracing for each thread
-  const std::vector<std::shared_ptr<TraceRay>> & _threaded_trace_ray;
 };

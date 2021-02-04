@@ -14,15 +14,9 @@ Packing<std::shared_ptr<SweepWork>>::packable_size(const std::shared_ptr<SweepWo
 
 template <>
 std::shared_ptr<SweepWork>
-Packing<std::shared_ptr<SweepWork>>::unpack(std::vector<buffer_type>::const_iterator in,
-                                      SweepWorkTracingStudy * study)
+Packing<std::shared_ptr<SweepWork>>::unpack(std::vector<buffer_type>::const_iterator in, SweepStudy  * study)
 {
-  std::shared_ptr<SweepWork> sweep_work = study->acquireSweepWorkInternal(id,
-                                                       data_size,
-                                                       aux_data_size,
-                                                       /* reset = */ false,
-                                                       SweepWorkTracingStudy::AcquireSweepWorkInternalKey());
-
+  sted::shared_ptr<SweepWork> sweep_work = study->acquireParallelData(0);
 
   // Unpack the data
   *in++ >> sweep_work->_current_value;
@@ -36,7 +30,7 @@ template <>
 void
 Packing<std::shared_ptr<SweepWork>>::pack(const std::shared_ptr<SweepWork> & sweep_work,
                                     std::back_insert_iterator<std::vector<buffer_type>> data_out,
-                                    const SweepWorkTracingStudy * study)
+                                    const void *)
 {
   data_out = static_cast<buffer_type>(sweep_work->_current_value);
   data_out = static_cast<buffer_type>(sweep_work->_current_node);
