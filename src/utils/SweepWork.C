@@ -26,9 +26,11 @@ Packing<std::shared_ptr<SweepWork>>::unpack(std::vector<buffer_type>::const_iter
   std::shared_ptr<SweepWork> sweep_work = study->acquireParallelData(0);
 
   // Unpack the data
+  sweep_work->_processor_id = *in++;
   sweep_work->_current_value = *in++;
   sweep_work->_current_node = *in++;
   sweep_work->_current_elem = *in++;
+  sweep_work->_should_continue = *in++;
 
   return sweep_work;
 }
@@ -37,11 +39,13 @@ template <>
 void
 Packing<std::shared_ptr<SweepWork>>::pack(const std::shared_ptr<SweepWork> & sweep_work,
                                     std::back_insert_iterator<std::vector<buffer_type>> data_out,
-                                    const void *)
+                                    const SweepStudy *)
 {
+  data_out = static_cast<buffer_type>(sweep_work->_processor_id);
   data_out = static_cast<buffer_type>(sweep_work->_current_value);
   data_out = static_cast<buffer_type>(sweep_work->_current_node);
   data_out = static_cast<buffer_type>(sweep_work->_current_elem);
+  data_out = static_cast<buffer_type>(sweep_work->_should_continue);
 }
 
 } // namespace Parallel
@@ -51,15 +55,19 @@ Packing<std::shared_ptr<SweepWork>>::pack(const std::shared_ptr<SweepWork> & swe
 void
 dataStore(std::ostream & stream, std::shared_ptr<SweepWork> & sweep_work, void * context)
 {
+  storeHelper(stream, sweep_work->_processor_id, context);
   storeHelper(stream, sweep_work->_current_value, context);
   storeHelper(stream, sweep_work->_current_node, context);
   storeHelper(stream, sweep_work->_current_elem, context);
+  storeHelper(stream, sweep_work->_should_continue, context);
 }
 
 void
 dataLoad(std::istream & stream, std::shared_ptr<SweepWork> & sweep_work, void * context)
 {
+  loadHelper(stream, sweep_work->_processor_id, context);
   loadHelper(stream, sweep_work->_current_value, context);
   loadHelper(stream, sweep_work->_current_node, context);
   loadHelper(stream, sweep_work->_current_elem, context);
+  loadHelper(stream, sweep_work->_should_continue, context);
 }

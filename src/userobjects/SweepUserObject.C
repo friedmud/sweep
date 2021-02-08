@@ -21,12 +21,24 @@ SweepUserObject::validParams()
 
   params += SweepStudy::validParams();
 
+  params.addRequiredParam<VariableName>("variable", "The name of the Auxiliary Variable to fill");
+  params.addRequiredParam<BoundaryName>("boundary", "The starting boundary to sweep from");
+
+  params.addRelationshipManager(
+    "ElementSideNeighborLayers",
+    Moose::RelationshipManagerType::GEOMETRIC,
+
+    [](const InputParameters & /*obj_params*/, InputParameters & rm_params) {
+      rm_params.set<unsigned short>("layers") = 1;
+    }
+  );
+
   return params;
 }
 
 SweepUserObject::SweepUserObject(const InputParameters & parameters)
     : GeneralUserObject(parameters),
-      _sweep_study(this->comm(), parameters, _subproblem.mesh())
+      _sweep_study(this->comm(), parameters, _subproblem.mesh(), _fe_problem.getAuxiliarySystem())
 {
 }
 
@@ -36,4 +48,5 @@ SweepUserObject::execute()
   _sweep_study.preExecute();
   _sweep_study.generateWork();
   _sweep_study.execute();
+  _sweep_study.postExecute();
 }

@@ -1,12 +1,16 @@
 [Mesh]
   type = GeneratedMesh
-  dim = 2
+  dim = 1
   nx = 10
-  ny = 10
 []
 
 [Variables]
   [u]
+  []
+[]
+
+[AuxVariables]
+  [s]
   []
 []
 
@@ -46,5 +50,8 @@
 [UserObjects]
   [./sweep]
     type = SweepUserObject
+    boundary = left
+    variable = s
+#    method = bs
   []
 []

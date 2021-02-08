@@ -26,7 +26,7 @@ class Packing<std::shared_ptr<SweepWork>>
 public:
   typedef Real buffer_type;
 
-  static const unsigned int data_size = 3;
+  static const unsigned int data_size = 5;
   static unsigned int packed_size(typename std::vector<Real>::const_iterator in);
   static unsigned int packable_size(const std::shared_ptr<SweepWork> & ray, const void *);
 
