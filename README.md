@@ -1,6 +1,6 @@
 Sweep
 =====
 
-"Fork Sweep" to create a new MOOSE-based application.
+Example application for utilizing the ParallelStudy capability in MOOSE.
 
-For more information see: [http://mooseframework.org/create-an-app/](http://mooseframework.org/create-an-app/)
+It simply sweeps along 1D mesh lines and lays down a counter along each line (starting at zero and just counting) in an Auxiliary variable.
