@@ -107,8 +107,6 @@ SweepStudy::postReceiveParallelData(const parallel_data_iterator begin,
 void
 SweepStudy::executeWork(const std::shared_ptr<SweepWork> & sweep_work, const THREAD_ID /*tid*/)
 {
-  std::cout << "Executing Work!" << std::endl;
-
   // Incoming work is logically on the "left" side of each 1D element (node 0)
   // Let's handle that as a special case up front - then process all of the "right" nodes after that
 
@@ -139,8 +137,6 @@ SweepStudy::executeWork(const std::shared_ptr<SweepWork> & sweep_work, const THR
   // Iterate through all of the other nodes owned by this processor on the right of elements (node 1)
   while (true)
   {
-    std::cerr << _pid << " Elem: " << current_elem->id() << std::endl;
-
     // Set the value at this node
     dof = current_node->dof_number(_sys_num, _var_num, 0);
     _solution->set(dof, sweep_work->_current_value++);
@@ -157,9 +153,6 @@ SweepStudy::executeWork(const std::shared_ptr<SweepWork> & sweep_work, const THR
 
     // Get the node on the right of the next elem
     current_node = current_elem->node_ptr(1);
-
-    std::cerr << _pid << " current_node: " << current_node->id() << " pid: " << current_node->processor_id() << std::endl;
-    std::cerr << _pid << " current_elem: " << current_elem->id() << " pid: " << current_elem->processor_id() << std::endl;
 
     // Is this node owned by another proc?
     if (current_node->processor_id() != _pid)

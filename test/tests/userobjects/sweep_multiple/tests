@@ -1,0 +1,7 @@
+[Tests]
+  [test]
+    type = 'Exodiff'
+    input = 'sweep_multiple.i'
+    exodiff = 'sweep_multiple_out.e'
+  []
+[]
