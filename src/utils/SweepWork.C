@@ -1,5 +1,9 @@
 #include "SweepWork.h"
 
+// Raytracing Includes
+#include "RayTracingPackingUtils.h"
+
+// MOOSE Includes
 #include "DataIO.h"
 
 namespace libMesh
@@ -7,16 +11,20 @@ namespace libMesh
 namespace Parallel
 {
 
+const unsigned int Packing<std::shared_ptr<SweepWork>>::mixed_size =
+  RayTracingPackingUtils::mixedPackSize<buffer_type>(
+    (processor_id_type)0, (long unsigned int)0, (dof_id_type)0, (dof_id_type)0, (bool)0);
+
 unsigned int
 Packing<std::shared_ptr<SweepWork>>::packed_size(typename std::vector<buffer_type>::const_iterator)
 {
-  return data_size;
+  return mixed_size;
 }
 
 unsigned int
 Packing<std::shared_ptr<SweepWork>>::packable_size(const std::shared_ptr<SweepWork> &, const void *)
 {
-  return data_size;
+  return mixed_size;
 }
 
 template <>
@@ -26,11 +34,12 @@ Packing<std::shared_ptr<SweepWork>>::unpack(std::vector<buffer_type>::const_iter
   std::shared_ptr<SweepWork> sweep_work = study->acquireParallelData(0);
 
   // Unpack the data
-  sweep_work->_processor_id = *in++;
-  sweep_work->_current_value = *in++;
-  sweep_work->_current_node = *in++;
-  sweep_work->_current_elem = *in++;
-  sweep_work->_should_continue = *in++;
+  RayTracingPackingUtils::mixedUnpack<buffer_type>(in,
+                                                   sweep_work->_processor_id,
+                                                   sweep_work->_current_value,
+                                                   sweep_work->_current_node,
+                                                   sweep_work->_current_elem,
+                                                   sweep_work->_should_continue);
 
   return sweep_work;
 }
@@ -41,11 +50,12 @@ Packing<std::shared_ptr<SweepWork>>::pack(const std::shared_ptr<SweepWork> & swe
                                     std::back_insert_iterator<std::vector<buffer_type>> data_out,
                                     const SweepStudy *)
 {
-  data_out = static_cast<buffer_type>(sweep_work->_processor_id);
-  data_out = static_cast<buffer_type>(sweep_work->_current_value);
-  data_out = static_cast<buffer_type>(sweep_work->_current_node);
-  data_out = static_cast<buffer_type>(sweep_work->_current_elem);
-  data_out = static_cast<buffer_type>(sweep_work->_should_continue);
+  RayTracingPackingUtils::mixedPack<buffer_type>(data_out,
+                                                 sweep_work->_processor_id,
+                                                 sweep_work->_current_value,
+                                                 sweep_work->_current_node,
+                                                 sweep_work->_current_elem,
+                                                 sweep_work->_should_continue);
 }
 
 } // namespace Parallel

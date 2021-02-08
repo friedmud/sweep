@@ -5,11 +5,11 @@
 class SweepWork
 {
 public:
-  Real  /* processor_id_type */_processor_id = Moose::INVALID_PROCESSOR_ID;
-  Real  /* long unsigned int */ _current_value = 0;
-  Real  /* dof_id_type */ _current_node = DofObject::invalid_id;
-  Real  /* dof_id_type */ _current_elem = DofObject::invalid_id;
-  Real  /* bool */ _should_continue = true;
+  processor_id_type _processor_id = Moose::INVALID_PROCESSOR_ID;
+  long unsigned int _current_value = 0;
+  dof_id_type _current_node = DofObject::invalid_id;
+  dof_id_type _current_elem = DofObject::invalid_id;
+  bool _should_continue = true;
 };
 
 /**
@@ -26,7 +26,7 @@ class Packing<std::shared_ptr<SweepWork>>
 public:
   typedef Real buffer_type;
 
-  static const unsigned int data_size = 5;
+  static const unsigned int mixed_size;
   static unsigned int packed_size(typename std::vector<Real>::const_iterator in);
   static unsigned int packable_size(const std::shared_ptr<SweepWork> & ray, const void *);
 
